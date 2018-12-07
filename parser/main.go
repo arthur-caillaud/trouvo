@@ -16,7 +16,7 @@ type Parser struct {
 	stopWords         []string
 	data              string
 	lines             []string
-	docs              []*Document
+	docs              *Collection
 }
 
 // New Parser
@@ -24,12 +24,12 @@ func New(pathName string, stopWordsPathName string) *Parser {
 	var stopWords []string
 	var data string
 	var lines []string
-	var docs []*Document
-	return &Parser{pathName, stopWordsPathName, stopWords, data, lines, docs}
+	var docs Collection
+	return &Parser{pathName, stopWordsPathName, stopWords, data, lines, &docs}
 }
 
-// GetDocs get the Document slice from the parser
-func (p *Parser) GetDocs() []*Document {
+// GetCollection get the collection from the parser
+func (p *Parser) GetCollection() *Collection {
 	p.run()
 	return p.docs
 }
@@ -118,5 +118,5 @@ func (p *Parser) parseDocuments() {
 		}
 	}
 	docs = docs[1:]
-	p.docs = docs
+	p.docs = NewCollection(docs)
 }

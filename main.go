@@ -12,12 +12,15 @@ const (
 
 func main() {
 	p := parser.New(pathName, stopWordsPathName)
-	docs := p.GetDocs()
+	col := p.GetCollection()
+	docs := col.GetDocs()
 	stopWords := p.GetStopWords()
 	for _, doc := range docs {
 		doc.SetTokens()
 		doc.FilterTokens(stopWords)
 	}
-	fmt.Println("Tokens :", docs[120].GetTokens())
-	fmt.Println("Filtered tokens :", docs[120].GetFilteredTokens())
+	col.BuildVocabulary()
+	fmt.Println("Tokens :", docs[1].GetTokens())
+	fmt.Println("Filtered tokens :", docs[1].GetFilteredTokens())
+	fmt.Println("Vocabulary :", col.GetVocabulary()[1])
 }

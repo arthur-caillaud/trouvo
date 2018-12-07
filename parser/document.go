@@ -1,6 +1,9 @@
 package parser
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 // Document struct
 type Document struct {
@@ -11,6 +14,8 @@ type Document struct {
 	tokens         []string
 	filteredTokens []string
 }
+
+const wordRegExp = "\b[A-Za-z]+\b"
 
 // newDocument creates a new Document
 func newDocument() *Document {
@@ -61,8 +66,9 @@ func (doc *Document) SetKeywords(keywords []string) {
 }
 
 func (doc *Document) SetTokens() {
-	titleTokens := strings.Split(doc.title, " ")
-	summaryTokens := strings.Split(doc.summary, " ")
+	re := regexp.MustCompile(wordRegExp)
+	titleTokens := re.FindAllString(doc.title, -1)
+	summaryTokens := re.FindAllString(doc.summary, -1)
 	var tokens []string
 	tokens = append(tokens, titleTokens...)
 	tokens = append(tokens, summaryTokens...)
