@@ -20,7 +20,5 @@ func main() {
 		doc.FilterTokens(stopWords)
 	}
 	col.BuildVocabulary()
-	fmt.Println("Tokens :", docs[1].GetTokens())
-	fmt.Println("Filtered tokens :", docs[1].GetFilteredTokens())
-	fmt.Println("Vocabulary :", col.GetVocabulary()[1])
+	fmt.Println("Vocabulary :", col.GetVocabulary())
 }

@@ -109,11 +109,11 @@ func (p *Parser) parseDocuments() {
 		} else {
 			switch nextLineHas {
 			case "T":
-				doc.SetTitle(line)
+				doc.SetTitle(doc.GetTitle() + line + " ")
 			case "W":
 				doc.SetSummary(doc.GetSummary() + line + " ")
 			case "K":
-				doc.SetKeywords(append(doc.GetKeywords(), strings.Split(line, " ")...))
+				doc.SetKeywords(doc.GetKeywords() + line + " ")
 			}
 		}
 	}

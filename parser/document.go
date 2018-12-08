@@ -1,6 +1,7 @@
 package parser
 
 import (
+	// "fmt"
 	"regexp"
 	"strings"
 )
@@ -10,19 +11,18 @@ type Document struct {
 	docID          int
 	title          string
 	summary        string
-	keywords       []string
+	keywords       string
 	tokens         []string
 	filteredTokens []string
 }
 
-const wordRegExp = "\b[A-Za-z]+\b"
+const wordRegExp = `\b[A-Za-z]+\b`
 
 // newDocument creates a new Document
 func newDocument() *Document {
-	var keywords []string
 	var tokens []string
 	var filteredTokens []string
-	return &Document{0, "", "", keywords, tokens, filteredTokens}
+	return &Document{0, "", "", "", tokens, filteredTokens}
 }
 
 func (doc *Document) GetDocID() int {
@@ -37,7 +37,7 @@ func (doc *Document) GetSummary() string {
 	return doc.summary
 }
 
-func (doc *Document) GetKeywords() []string {
+func (doc *Document) GetKeywords() string {
 	return doc.keywords
 }
 
@@ -61,7 +61,7 @@ func (doc *Document) SetSummary(summary string) {
 	doc.summary = summary
 }
 
-func (doc *Document) SetKeywords(keywords []string) {
+func (doc *Document) SetKeywords(keywords string) {
 	doc.keywords = keywords
 }
 
@@ -69,10 +69,11 @@ func (doc *Document) SetTokens() {
 	re := regexp.MustCompile(wordRegExp)
 	titleTokens := re.FindAllString(doc.title, -1)
 	summaryTokens := re.FindAllString(doc.summary, -1)
+	keywordTokens := re.FindAllString(doc.keywords, -1)
 	var tokens []string
 	tokens = append(tokens, titleTokens...)
 	tokens = append(tokens, summaryTokens...)
-	tokens = append(tokens, doc.keywords...)
+	tokens = append(tokens, keywordTokens...)
 	for _, token := range tokens {
 		token = strings.ToLower(token)
 		if token != "" {
