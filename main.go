@@ -1,9 +1,10 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"gogole/indexer"
 	"gogole/parser"
+	"gogole/search"
 )
 
 const (
@@ -23,4 +24,7 @@ func main() {
 	col.BuildVocabulary()
 	indexer := indexer.NewIndexer(col)
 	indexer.Build()
+	engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
+	res := engine.BoolSearch("slip || hypothesis")
+	fmt.Println(res)
 }

@@ -1,7 +1,7 @@
 package indexer
 
 import (
-	"fmt"
+	// "fmt"
 	"gogole/parser"
 )
 
@@ -49,4 +49,19 @@ func (indexer *Indexer) Build() {
 			indexer.index[tokenID] = postingList
 		}
 	}
+}
+
+// GetIndex returns the pointer of the index
+func (indexer Indexer) GetIndex() *map[int][]int {
+	return &indexer.index
+}
+
+// GetVocDict returns the pointer of the vocDict
+func (indexer Indexer) GetVocDict() *map[string]int {
+	return &indexer.vocDict
+}
+
+// GetDocDict returns the pointer of the docDict
+func (indexer Indexer) GetDocDict() *map[int]*parser.Document {
+	return &indexer.docDict
 }
