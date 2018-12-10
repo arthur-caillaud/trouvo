@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
+	"gogole/indexer"
 	"gogole/parser"
 )
 
@@ -20,5 +21,6 @@ func main() {
 		doc.FilterTokens(stopWords)
 	}
 	col.BuildVocabulary()
-	fmt.Println("Vocabulary :", col.GetVocabulary())
+	indexer := indexer.NewIndexer(col)
+	indexer.Build()
 }
