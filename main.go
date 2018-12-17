@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"gogole/indexer"
-	"gogole/parser"
-	//"gogole/search"
+	"trouvo/indexer"
+	"trouvo/parser"
+	//"trouvo/search"
 	"time"
 )
 
 const (
-	pathName          = "/Users/arthur/go/src/gogole/Data/CACM/cacm.all"
-	stopWordsPathName = "/Users/arthur/go/src/gogole/Data/CACM/common_words"
+	pathName          = "/Users/arthur/go/src/trouvo/Data/CACM/cacm.all"
+	stopWordsPathName = "/Users/arthur/go/src/trouvo/Data/CACM/common_words"
 )
 
 func main() {
@@ -24,7 +24,6 @@ func main() {
 	fmt.Println("Parsed in", elapsed)
 	fmt.Println("----")
 
-	fmt.Println("----")
 	start = time.Now()
 	docs := col.GetDocs()
 	stopWords := p.GetStopWords()
@@ -37,7 +36,6 @@ func main() {
 	fmt.Println("Tokenized in", elapsed)
 	fmt.Println("----")
 
-	fmt.Println("----")
 	start = time.Now()
 	col.BuildVocabulary()
 	fmt.Println(len(col.GetVocabulary()), "words in vocabulary")
@@ -46,7 +44,6 @@ func main() {
 	fmt.Println("Vocabulary built in", elapsed)
 	fmt.Println("----")
 
-	fmt.Println("----")
 	start = time.Now()
 	indexer := indexer.New(col)
 	indexer.Build()

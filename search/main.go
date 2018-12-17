@@ -2,8 +2,8 @@ package search
 
 import (
 	// "fmt"
-	"gogole/parser"
 	"regexp"
+	"trouvo/parser"
 )
 
 // Engine is a SearchEngine struct

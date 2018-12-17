@@ -2,7 +2,7 @@ package indexer
 
 import (
 	// "fmt"
-	"gogole/parser"
+	"trouvo/parser"
 )
 
 // Indexer struct
