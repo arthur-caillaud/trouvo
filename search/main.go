@@ -1,8 +1,28 @@
 package search
 
 import (
+	"bufio"
+	"fmt"
+	"os"
 	"strings"
+	"time"
 )
+
+// Run the search engine that reads the console input to process the query
+func (engine *Engine) Run() {
+	for true {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Type query :")
+		text, _ := reader.ReadString('\n')
+		start := time.Now()
+		res := engine.BoolSearch(text)
+		end := time.Now()
+		elapsed := end.Sub(start)
+		fmt.Println(len(res), "results found in", elapsed)
+		fmt.Println(res)
+		fmt.Println("----")
+	}
+}
 
 // BoolSearch operates a boolean query with the SearchEngine
 func (engine *Engine) BoolSearch(q string) (res []int) {
