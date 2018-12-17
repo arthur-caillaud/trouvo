@@ -22,9 +22,9 @@ func main() {
 		doc.FilterTokens(stopWords)
 	}
 	col.BuildVocabulary()
-	indexer := indexer.NewIndexer(col)
+	indexer := indexer.New(col)
 	indexer.Build()
 	engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
-	res := engine.BoolSearch("slip || hypothesis")
+	res := engine.BoolSearch("slip||hypothesis||house")
 	fmt.Println(res)
 }

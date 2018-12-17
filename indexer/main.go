@@ -13,8 +13,8 @@ type Indexer struct {
 	docDict map[int]*parser.Document
 }
 
-// NewIndexer creates a new indexer
-func NewIndexer(col *parser.Collection) *Indexer {
+// New creates a new indexer
+func New(col *parser.Collection) *Indexer {
 	index := make(map[int][]int)
 	vocDict := make(map[string]int)
 	docDict := make(map[int]*parser.Document)
