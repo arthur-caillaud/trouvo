@@ -14,6 +14,19 @@ func isOr(q string) bool {
 	return res != ""
 }
 
+func parse(q string, op string) (p []string) {
+	switch op {
+	case "AND":
+		return parseAnd(q)
+	case "OR":
+		return parseOr(q)
+	case "NOT":
+		return parseNot(q)
+	default:
+		return []string{q}
+	}
+}
+
 func parseOr(q string) (p []string) {
 	re := regexp.MustCompile("\\|\\|")
 	p = re.Split(q, -1)

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"time"
 	"trouvo/indexer"
 	"trouvo/parser"
@@ -52,12 +54,17 @@ func main() {
 	fmt.Println("Indexed in", elapsed)
 	fmt.Println("----")
 
-	start = time.Now()
 	engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
-	res := engine.BoolSearch("cat&&dog||house&&platform||a&&!a&&b")
-	end = time.Now()
-	elapsed = end.Sub(start)
-	fmt.Println("Results found in", elapsed)
-	fmt.Println("----")
-	fmt.Println(res)
+	for true {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Type query :")
+		text, _ := reader.ReadString('\n')
+		start := time.Now()
+		res := engine.BoolSearch(text)
+		end := time.Now()
+		elapsed := end.Sub(start)
+		fmt.Println(len(res), "results found in", elapsed)
+		fmt.Println(res)
+		fmt.Println("----")
+	}
 }
