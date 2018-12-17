@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"trouvo/indexer"
 	"trouvo/parser"
-	//"trouvo/search"
-	"time"
+	"trouvo/search"
 )
 
 const (
@@ -51,7 +51,13 @@ func main() {
 	elapsed = end.Sub(start)
 	fmt.Println("Indexed in", elapsed)
 	fmt.Println("----")
-	// engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
-	// res := engine.BoolSearch("slip||hypothesis||house")
-	// fmt.Println(res)
+
+	start = time.Now()
+	engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
+	res := engine.BoolSearch("cat&&dog||house&&platform||a&&!a&&b")
+	end = time.Now()
+	elapsed = end.Sub(start)
+	fmt.Println("Results found in", elapsed)
+	fmt.Println("----")
+	fmt.Println(res)
 }
