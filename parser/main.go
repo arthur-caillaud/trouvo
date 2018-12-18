@@ -1,7 +1,6 @@
 package parser
 
 import (
-	//"fmt"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -9,38 +8,8 @@ import (
 
 var separators = [8]string{".I", ".T", ".W", ".B", ".A", ".N", ".X", ".K"}
 
-// Parser struct
-type Parser struct {
-	pathName          string
-	stopWordsPathName string
-	stopWords         []string
-	data              string
-	lines             []string
-	docs              *Collection
-}
-
-// New Parser
-func New(pathName string, stopWordsPathName string) *Parser {
-	var stopWords []string
-	var data string
-	var lines []string
-	var docs Collection
-	return &Parser{pathName, stopWordsPathName, stopWords, data, lines, &docs}
-}
-
-// GetCollection get the collection from the parser
-func (p *Parser) GetCollection() *Collection {
-	p.run()
-	return p.docs
-}
-
-// GetStopWords return the list of the stopwords
-func (p *Parser) GetStopWords() []string {
-	return p.stopWords
-}
-
 // Run the parser so that it parse all the documents
-func (p *Parser) run() {
+func (p *Parser) Run() {
 	p.openFile()
 	p.loadStopWords()
 	p.parseFile()

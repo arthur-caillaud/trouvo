@@ -18,6 +18,7 @@ func main() {
 	fmt.Println("----")
 	start := time.Now()
 	p := parser.New(pathName, stopWordsPathName)
+	p.Run() // Parsing...
 	col := p.GetCollection()
 	end := time.Now()
 	elapsed := end.Sub(start)
@@ -28,7 +29,7 @@ func main() {
 	docs := col.GetDocs()
 	stopWords := p.GetStopWords()
 	for _, doc := range docs {
-		doc.SetTokens()
+		doc.Tokenize()
 		doc.FilterTokens(stopWords)
 	}
 	end = time.Now()
@@ -53,5 +54,5 @@ func main() {
 	fmt.Println("----")
 
 	engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
-	engine.Run()
+	engine.Run() // Run the SearchEngine
 }

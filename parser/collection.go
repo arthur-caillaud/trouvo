@@ -1,7 +1,5 @@
 package parser
 
-// import "fmt"
-
 // Collection struct
 type Collection struct {
 	docs []*Document
