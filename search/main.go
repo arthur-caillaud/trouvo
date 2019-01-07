@@ -42,7 +42,9 @@ func (engine *Engine) recursiveBoolSearch(b BoolQueryGroup) BoolQueryGroup {
 		} else if isNot(q) {
 			subResults = append(subResults, (*engine).getQuerySubResults(q, "NOT"))
 		} else {
-			subResults = append(subResults, (*engine.index)[(*engine.vocDict)[q]])
+			if vocID, ok := (*engine.vocDict)[q]; ok {
+				subResults = append(subResults, (*engine.index)[vocID])
+			}
 		}
 	}
 	res := engine.processSubResults(subResults, b.operator)
