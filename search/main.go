@@ -44,6 +44,8 @@ func (engine *Engine) recursiveBoolSearch(b BoolQueryGroup) BoolQueryGroup {
 		} else {
 			if vocID, ok := (*engine.vocDict)[q]; ok {
 				subResults = append(subResults, (*engine.index)[vocID])
+			} else {
+				subResults = append(subResults, []int{})
 			}
 		}
 	}
@@ -53,7 +55,7 @@ func (engine *Engine) recursiveBoolSearch(b BoolQueryGroup) BoolQueryGroup {
 
 func (engine *Engine) getQuerySubResults(q string, op string) []int {
 	subQueries := parse(q, op)
-	subQueryGroup := newBoolQueryGroup(subQueries, "OR", []int{})
+	subQueryGroup := newBoolQueryGroup(subQueries, op, []int{})
 	res := (*engine).recursiveBoolSearch(subQueryGroup)
 	return res.result
 }

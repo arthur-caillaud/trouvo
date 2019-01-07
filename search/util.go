@@ -1,6 +1,8 @@
 package search
 
-import "regexp"
+import (
+	"regexp"
+)
 
 func isPrimal(q string) bool {
 	re := regexp.MustCompile("\\|\\||&&|!")
