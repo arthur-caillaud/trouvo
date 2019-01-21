@@ -43,7 +43,12 @@ func (engine *Engine) recursiveBoolSearch(b BoolQueryGroup) BoolQueryGroup {
 			subResults = append(subResults, (*engine).getQuerySubResults(q, "NOT"))
 		} else {
 			if vocID, ok := (*engine.vocDict)[q]; ok {
-				subResults = append(subResults, (*engine.index)[vocID])
+				postings := (*engine.index)[vocID]
+				subResult := []int{}
+				for docID := range postings {
+					subResult = append(subResult, docID)
+				}
+				subResults = append(subResults, subResult)
 			} else {
 				subResults = append(subResults, []int{})
 			}

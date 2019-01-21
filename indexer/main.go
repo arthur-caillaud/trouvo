@@ -12,7 +12,13 @@ func (indexer *Indexer) Build() {
 		for _, token := range doc.GetFilteredTokens() {
 			tokenID := voc[token]
 			postingList := indexer.index[tokenID]
-			postingList = append(postingList, docID)
+			if postingList == nil {
+				postingList = make(map[int]int)
+			}
+			if _, ok := postingList[docID]; !ok {
+				postingList[docID] = 0
+			}
+			postingList[docID]++
 			indexer.index[tokenID] = postingList
 		}
 	}

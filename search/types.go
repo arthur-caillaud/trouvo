@@ -4,7 +4,7 @@ import "trouvo/parser"
 
 // Engine is a SearchEngine struct
 type Engine struct {
-	index   *map[int][]int
+	index   *map[int]map[int]int
 	vocDict *map[string]int
 	docDict *map[int]*parser.Document
 }
@@ -17,7 +17,7 @@ type BoolQueryGroup struct {
 }
 
 // NewSearchEngine creates a new SearchEngine
-func NewSearchEngine(index *map[int][]int, vocDict *map[string]int, docDict *map[int]*parser.Document) *Engine {
+func NewSearchEngine(index *map[int]map[int]int, vocDict *map[string]int, docDict *map[int]*parser.Document) *Engine {
 	return &Engine{index, vocDict, docDict}
 }
 
