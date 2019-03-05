@@ -25,10 +25,24 @@ func (indexer *Indexer) Build() {
 			indexer.index[tokenID] = postingList
 		}
 	}
+	// Building idfDict
 	for tokenID, postings := range indexer.index {
 		postingsLength := len(postings)
 		idfRatio := float64(docDictLength) / float64(postingsLength)
 		indexer.idfDict[tokenID] = math.Log10(idfRatio)
+	}
+	// Building docNormDict
+	for docID := range indexer.docDict {
+		for tokenID, postings := range indexer.index {
+			for _docID, termFrequency := range postings {
+				if docID == _docID { // This token is in this document
+					inverseDocFrequency := indexer.idfDict[tokenID]
+					termWeight := termFrequency * inverseDocFrequency
+					indexer.docNormDict[docID] += termWeight * termWeight
+					break
+				}
+			}
+		}
 	}
 }
 
