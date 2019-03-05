@@ -1,26 +1,34 @@
 package indexer
 
 import (
+	"math"
 	"trouvo/parser"
 )
 
 // Build build the index of the indexer
 func (indexer *Indexer) Build() {
-	docs := indexer.buildDocDict()
-	voc := indexer.buildVocDict()
-	for docID, doc := range docs {
+	docDict := indexer.buildDocDict()
+	docDictLength := len(docDict)
+	vocDict := indexer.buildVocDict()
+	for docID, doc := range docDict {
+		docLength := len(doc.GetFilteredTokens())
 		for _, token := range doc.GetFilteredTokens() {
-			tokenID := voc[token]
+			tokenID := vocDict[token]
 			postingList := indexer.index[tokenID]
 			if postingList == nil {
-				postingList = make(map[int]int)
+				postingList = make(map[int]float64)
 			}
 			if _, ok := postingList[docID]; !ok {
 				postingList[docID] = 0
 			}
-			postingList[docID]++
+			postingList[docID] += 1 / float64(docLength)
 			indexer.index[tokenID] = postingList
 		}
+	}
+	for tokenID, postings := range indexer.index {
+		postingsLength := len(postings)
+		idfRatio := float64(docDictLength) / float64(postingsLength)
+		indexer.idfDict[tokenID] = math.Log10(idfRatio)
 	}
 }
 
