@@ -2,6 +2,7 @@ package search
 
 import (
 	"regexp"
+	"strings"
 )
 
 func isPrimal(q string) bool {
@@ -14,6 +15,10 @@ func isOr(q string) bool {
 	re := regexp.MustCompile("\\|\\|")
 	res := re.FindString(q)
 	return res != ""
+}
+
+func splitWords(q string) []string {
+	return strings.Split(q, " ")
 }
 
 func parse(q string, op string) (p []string) {
@@ -120,4 +125,10 @@ func filterDuplicates(in []int) (out []int) {
 		}
 	}
 	return
+}
+
+func makeSortDocClosure(s map[int]float64) func(docID1, docID2 int) bool {
+	return func(docID1, docID2 int) bool {
+		return s[docID1] < s[docID2]
+	}
 }
