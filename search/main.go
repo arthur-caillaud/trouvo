@@ -3,7 +3,9 @@ package search
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
@@ -15,7 +17,7 @@ func (engine *Engine) Run() {
 		fmt.Println("Type query :")
 		text, _ := reader.ReadString('\n')
 		start := time.Now()
-		res := engine.BoolSearch(text)
+		res := engine.VectSearch(text)
 		end := time.Now()
 		elapsed := end.Sub(start)
 		fmt.Println(len(res), "results found in", elapsed)
@@ -24,12 +26,55 @@ func (engine *Engine) Run() {
 	}
 }
 
-// BoolSearch operates a boolean query with the SearchEngine
+// BoolSearch runs a boolean query with the SearchEngine
 func (engine *Engine) BoolSearch(q string) (res []int) {
 	q = strings.TrimSpace(q)
 	firstBoolQueryGroup := newBoolQueryGroup([]string{q}, "RET", res)
 	res = (*engine).recursiveBoolSearch(firstBoolQueryGroup).result
 	return res
+}
+
+// VectSearch runs a vectorial query with the SearchEngine and cos measure
+func (engine *Engine) VectSearch(q string) (res []int) {
+	qWords := splitWords(q)
+	index := *engine.index
+	vocDict := *engine.vocDict
+	idfDict := *engine.idfDict
+	docNormDict := *engine.docNormDict
+	var qNormFactor float64
+	s := make(map[int]float64)
+
+	for _, qWord := range qWords {
+		termOccurence := 0
+		for _, _qWord := range qWords {
+			if _qWord == qWord {
+				termOccurence++
+			}
+		}
+		termFrequency := float64(termOccurence) / float64(len(qWords))
+
+		if tokenID, ok := vocDict[qWord]; ok {
+			inverseDocFrequency := idfDict[tokenID]
+			qTermWeight := termFrequency * inverseDocFrequency
+			qNormFactor += qTermWeight * qTermWeight
+
+			for docID, termFrequency := range index[tokenID] {
+				docTermWeight := docNormDict[docID] * termFrequency * inverseDocFrequency
+				s[docID] = docTermWeight * docTermWeight
+			}
+		}
+	}
+
+	for docID, docScore := range s {
+		if docScore != 0 {
+			s[docID] = docScore / (math.Sqrt(qNormFactor) * math.Sqrt(docNormDict[docID]))
+			res = append(res, docID)
+		}
+	}
+
+	sort.Slice(res, makeSortDocClosure(s))
+
+	return
 }
 
 func (engine *Engine) recursiveBoolSearch(b BoolQueryGroup) BoolQueryGroup {
