@@ -53,6 +53,12 @@ func main() {
 	fmt.Println("Indexed in", elapsed)
 	fmt.Println("----")
 
-	engine := search.NewSearchEngine(indexer.GetIndex(), indexer.GetVocDict(), indexer.GetDocDict())
+	engine := search.NewSearchEngine(
+		indexer.GetIndex(),
+		indexer.GetVocDict(),
+		indexer.GetIdfDict(),
+		indexer.GetDocDict(),
+		indexer.GetDocNormDict(),
+	)
 	engine.Run() // Run the SearchEngine
 }
