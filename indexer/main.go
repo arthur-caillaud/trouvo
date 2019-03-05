@@ -2,18 +2,22 @@ package indexer
 
 import (
 	"math"
-	"trouvo/parser"
 )
 
 // Build build the index of the indexer
 func (indexer *Indexer) Build() {
-	docDict := indexer.buildDocDict()
-	docDictLength := len(docDict)
-	vocDict := indexer.buildVocDict()
-	for docID, doc := range docDict {
+	indexer.buildDocDict()
+	indexer.buildVocDict()
+	indexer.buildIndex()
+	indexer.buildIdfDict()
+	indexer.buildDocNormDict()
+}
+
+func (indexer *Indexer) buildIndex() {
+	for docID, doc := range indexer.docDict {
 		docLength := len(doc.GetFilteredTokens())
 		for _, token := range doc.GetFilteredTokens() {
-			tokenID := vocDict[token]
+			tokenID := indexer.vocDict[token]
 			postingList := indexer.index[tokenID]
 			if postingList == nil {
 				postingList = make(map[int]float64)
@@ -25,13 +29,18 @@ func (indexer *Indexer) Build() {
 			indexer.index[tokenID] = postingList
 		}
 	}
-	// Building idfDict
+}
+
+func (indexer *Indexer) buildIdfDict() {
+	docDictLength := len(indexer.docDict)
 	for tokenID, postings := range indexer.index {
 		postingsLength := len(postings)
 		idfRatio := float64(docDictLength) / float64(postingsLength)
 		indexer.idfDict[tokenID] = math.Log10(idfRatio)
 	}
-	// Building docNormDict
+}
+
+func (indexer *Indexer) buildDocNormDict() {
 	for docID := range indexer.docDict {
 		for tokenID, postings := range indexer.index {
 			for _docID, termFrequency := range postings {
@@ -46,18 +55,16 @@ func (indexer *Indexer) Build() {
 	}
 }
 
-func (indexer *Indexer) buildVocDict() map[string]int {
+func (indexer *Indexer) buildVocDict() {
 	voc := indexer.col.GetVocabulary()
 	for k, word := range voc {
 		indexer.vocDict[word] = k
 	}
-	return indexer.vocDict
 }
 
-func (indexer *Indexer) buildDocDict() map[int]*parser.Document {
+func (indexer *Indexer) buildDocDict() {
 	docs := indexer.col.GetDocs()
 	for k, doc := range docs {
 		indexer.docDict[k] = doc
 	}
-	return indexer.docDict
 }
