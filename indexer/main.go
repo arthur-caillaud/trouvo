@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-// Build build the index of the indexer
+// Build builds all the dicts and index of the indexer
 func (indexer *Indexer) Build() {
 	indexer.buildDocDict()
 	indexer.buildVocDict()
