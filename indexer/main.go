@@ -57,8 +57,10 @@ func (indexer *Indexer) buildDocNormDict() {
 
 func (indexer *Indexer) buildVocDict() {
 	voc := indexer.col.GetVocabulary()
-	for k, word := range voc {
-		indexer.vocDict[word] = k
+	tokenID := 0
+	for word := range voc {
+		indexer.vocDict[word] = tokenID
+		tokenID++
 	}
 }
 
