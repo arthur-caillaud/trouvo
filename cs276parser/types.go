@@ -11,3 +11,7 @@ func New(pathName string) *Parser {
 	collections := []*parser.Collection{}
 	return &Parser{pathName, collections}
 }
+
+func (p *Parser) GetCollections() []*parser.Collection {
+	return p.collections
+}
