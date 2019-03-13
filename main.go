@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"trouvo/display"
 	"trouvo/indexer"
 	"trouvo/parser"
 	"trouvo/search"
@@ -60,5 +61,6 @@ func main() {
 		indexer.GetDocDict(),
 		indexer.GetDocNormDict(),
 	)
-	engine.Run() // Run the SearchEngine
+	disp := display.New(indexer.GetDocDict())
+	engine.Run(disp) // Run the SearchEngine
 }

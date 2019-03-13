@@ -10,18 +10,25 @@ import (
 	"time"
 )
 
+import (
+	"trouvo/display"
+)
+
 // Run the search engine that reads the console input to process the query
-func (engine *Engine) Run() {
+func (engine *Engine) Run(display *display.Display) {
 	for true {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Println("Type query :")
 		text, _ := reader.ReadString('\n')
 		start := time.Now()
+		text = strings.TrimSpace(text)
 		res := engine.VectSearch(text)
 		end := time.Now()
 		elapsed := end.Sub(start)
 		fmt.Println(len(res), "results found in", elapsed)
-		fmt.Println(res)
+		for docID := range res {
+			display.Show(docID)
+		}
 		fmt.Println("----")
 	}
 }
