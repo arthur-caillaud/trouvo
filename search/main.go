@@ -26,8 +26,12 @@ func (engine *Engine) Run(display *display.Display) {
 		end := time.Now()
 		elapsed := end.Sub(start)
 		fmt.Println(len(res), "results found in", elapsed)
-		for docID := range res {
-			display.Show(docID)
+		for k, docID := range res {
+			if k < 10 {
+				display.Show(docID)
+			} else {
+				break
+			}
 		}
 		fmt.Println("----")
 	}
