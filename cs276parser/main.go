@@ -23,6 +23,7 @@ func (p *Parser) Run() {
 			doc.SetDocID(docID)
 			doc.SetFilteredTokens(tokens)
 			docs = append(docs, doc)
+			docID++
 		}
 		col := parser.NewCollection(docs)
 		p.collections = append(p.collections, col)
