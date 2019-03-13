@@ -17,7 +17,7 @@ const (
 )
 
 func main() {
-	mainCACM()
+	mainCS276()
 }
 
 func mainCACM() {
@@ -57,6 +57,7 @@ func mainCACM() {
 	end = time.Now()
 	elapsed = end.Sub(start)
 	fmt.Println("Indexed in", elapsed)
+	fmt.Println("Index is", indexer.GetIndexSize(), "kB large.")
 	fmt.Println("----")
 
 	engine := search.NewSearchEngine(
@@ -89,4 +90,23 @@ func mainCS276() {
 	elapsed = end.Sub(start)
 	fmt.Println("Vocabulary built in", elapsed)
 	fmt.Println("----")
+
+	start = time.Now()
+	indexer := indexer.New(cols[0])
+	indexer.Build()
+	end = time.Now()
+	elapsed = end.Sub(start)
+	fmt.Println("Indexed in", elapsed)
+	fmt.Println("Index is", indexer.GetIndexSize(), "kB large.")
+	fmt.Println("----")
+
+	engine := search.NewSearchEngine(
+		indexer.GetIndex(),
+		indexer.GetVocDict(),
+		indexer.GetIdfDict(),
+		indexer.GetDocDict(),
+		indexer.GetDocNormDict(),
+	)
+	disp := display.New(indexer.GetDocDict())
+	engine.Run(disp)
 }
