@@ -17,11 +17,11 @@ const (
 )
 
 func main() {
-	mainCS276()
+	mainCACM()
 }
 
 func mainCACM() {
-	fmt.Println("----")
+
 	start := time.Now()
 	p := parser.New(pathNameCACM, stopWordsPathName)
 	p.Run() // Parsing...
@@ -71,12 +71,22 @@ func mainCACM() {
 }
 
 func mainCS276() {
-	fmt.Println("----")
+
 	start := time.Now()
 	p := cs276parser.New(pathNameCS276)
 	p.Run() // Parsing...
 	end := time.Now()
 	elapsed := end.Sub(start)
 	fmt.Println("Parsed in", elapsed)
+	fmt.Println("----")
+
+	start = time.Now()
+	cols := p.GetCollections()
+	for _, col := range cols {
+		col.BuildVocabulary()
+	}
+	end = time.Now()
+	elapsed = end.Sub(start)
+	fmt.Println("Vocabulary built in", elapsed)
 	fmt.Println("----")
 }
