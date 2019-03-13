@@ -1,6 +1,7 @@
 package indexer
 
 import (
+	"math"
 	"trouvo/parser"
 )
 
@@ -47,4 +48,16 @@ func (indexer Indexer) GetIdfDict() *map[int]float64 {
 // GetDocNormDict returns the pointer of the docNormDict
 func (indexer Indexer) GetDocNormDict() *map[int]float64 {
 	return &indexer.docNormDict
+}
+
+// GetIndexSize computes the total size of the index in bytes
+func (indexer Indexer) GetIndexSize() int {
+	index := *indexer.GetIndex()
+	size := 8 * len(index)
+	for _, postings := range index {
+		size += 16 * len(postings)
+	}
+	kb := int(math.Pow(2, 10))
+	size = int(size / kb)
+	return size
 }
