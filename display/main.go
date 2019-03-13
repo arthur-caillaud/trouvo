@@ -1,10 +1,22 @@
 package display
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // Show displays a summary of the document with docID
-func (display *Display) Show(docID int) {
-	doc := (*display.docDict)[docID]
-	docTitle := doc.GetTitle()
-	fmt.Println(docTitle)
+func (display *Display) Show(res []int, elapsed time.Duration) {
+	fmt.Println(len(res), "results found in", elapsed)
+	fmt.Println("----")
+	for k, docID := range res {
+		if k < 10 {
+			doc := (*display.docDict)[docID]
+			docTitle := doc.GetTitle()
+			fmt.Println(docTitle)
+		} else {
+			break
+		}
+	}
+	fmt.Println("----")
 }

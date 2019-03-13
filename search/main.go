@@ -25,15 +25,7 @@ func (engine *Engine) Run(display *display.Display) {
 		res := engine.VectSearch(text)
 		end := time.Now()
 		elapsed := end.Sub(start)
-		fmt.Println(len(res), "results found in", elapsed)
-		for k, docID := range res {
-			if k < 10 {
-				display.Show(docID)
-			} else {
-				break
-			}
-		}
-		fmt.Println("----")
+		display.Show(res, elapsed)
 	}
 }
 
