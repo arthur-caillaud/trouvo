@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 	"time"
 	"trouvo/cs276parser"
 	"trouvo/display"
@@ -68,7 +71,19 @@ func mainCACM() {
 		indexer.GetDocNormDict(),
 	)
 	disp := display.New(indexer.GetDocDict())
-	engine.Run(disp) // Run the SearchEngine
+
+	// Main infinite loop used to let the user query our search engine
+	for true {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Type query :")
+		text, _ := reader.ReadString('\n')
+		start := time.Now()
+		text = strings.TrimSpace(text)
+		res := engine.VectSearch(text)
+		end := time.Now()
+		elapsed := end.Sub(start)
+		disp.Show(res, elapsed)
+	}
 }
 
 func mainCS276() {
@@ -92,21 +107,41 @@ func mainCS276() {
 	fmt.Println("----")
 
 	start = time.Now()
-	indexer := indexer.New(cols[0])
-	indexer.Build()
+	engines := []*search.Engine{}
+	indexSize := 0
+	for _, col := range cols {
+		indexer := indexer.New(col)
+		indexer.Build()
+		indexSize += indexer.GetIndexSize()
+
+		engine := search.NewSearchEngine(
+			indexer.GetIndex(),
+			indexer.GetVocDict(),
+			indexer.GetIdfDict(),
+			indexer.GetDocDict(),
+			indexer.GetDocNormDict(),
+		)
+		engines = append(engines, engine)
+	}
 	end = time.Now()
 	elapsed = end.Sub(start)
 	fmt.Println("Indexed in", elapsed)
-	fmt.Println("Index is", indexer.GetIndexSize(), "kB large.")
+	fmt.Println("Index is", indexSize, "kB large.")
 	fmt.Println("----")
 
-	engine := search.NewSearchEngine(
-		indexer.GetIndex(),
-		indexer.GetVocDict(),
-		indexer.GetIdfDict(),
-		indexer.GetDocDict(),
-		indexer.GetDocNormDict(),
-	)
+	superEngine := search.NewSuperEngine(engines)
 	disp := display.New(indexer.GetDocDict())
-	engine.Run(disp)
+
+	// Main infinite loop used to let the user query our search engine
+	for true {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Type query :")
+		text, _ := reader.ReadString('\n')
+		start := time.Now()
+		text = strings.TrimSpace(text)
+		res := superEngine.VectSearch(text)
+		end := time.Now()
+		elapsed := end.Sub(start)
+		disp.Show(res, elapsed)
+	}
 }
