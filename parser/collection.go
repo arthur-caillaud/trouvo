@@ -3,12 +3,12 @@ package parser
 // Collection struct
 type Collection struct {
 	docs []*Document
-	voc  []string
+	voc  map[string]bool
 }
 
 // NewCollection creates a new Collection
 func NewCollection(docs []*Document) *Collection {
-	var voc []string
+	voc := make(map[string]bool)
 	return &Collection{docs, voc}
 }
 
@@ -17,23 +17,19 @@ func (col *Collection) BuildVocabulary() {
 	for _, doc := range col.docs {
 		for _, word := range doc.filteredTokens {
 			if !col.isInVoc(word) {
-				col.voc = append(col.voc, word)
+				col.voc[word] = true
 			}
 		}
 	}
 }
 
 func (col *Collection) isInVoc(word string) bool {
-	for _, _word := range col.voc {
-		if word == _word {
-			return true
-		}
-	}
-	return false
+	_, ok := col.voc[word]
+	return ok
 }
 
 // GetVocabulary get the vocabulary of the collection
-func (col *Collection) GetVocabulary() []string {
+func (col *Collection) GetVocabulary() map[string]bool {
 	return col.voc
 }
 
