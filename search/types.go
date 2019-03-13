@@ -52,3 +52,11 @@ func newBoolQueryGroup(q []string, operator string, result []int) BoolQueryGroup
 func newResult(docID int, score float64) *Result {
 	return &Result{docID, score}
 }
+
+func (res *Result) GetDocID() int {
+	return res.docID
+}
+
+func (res *Result) GetScore() float64 {
+	return res.score
+}
