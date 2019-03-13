@@ -17,9 +17,8 @@ func (p *Parser) Run() {
 }
 
 func (p *Parser) openFile() {
-	dat, _ := ioutil.ReadFile(p.pathName)
-	f := string(dat)
-	p.data = f
+	data, _ := ioutil.ReadFile(p.pathName)
+	p.data = string(data)
 }
 
 func (p *Parser) loadStopWords() {
@@ -53,7 +52,7 @@ func isSeparator(sep string) bool {
 
 func (p *Parser) parseDocuments() {
 	var docs []*Document
-	doc := newDocument()
+	doc := NewDocument()
 	nextLineHas := ""
 	for _, line := range p.lines {
 		sep := readSeparator(line)
@@ -62,7 +61,7 @@ func (p *Parser) parseDocuments() {
 			switch sep {
 			case ".I":
 				docs = append(docs, doc)
-				doc = newDocument()
+				doc = NewDocument()
 				docID, _ := strconv.Atoi(line[3:])
 				doc.SetDocID(docID)
 				nextLineHas = ""

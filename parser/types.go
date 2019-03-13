@@ -39,8 +39,8 @@ func (p *Parser) GetStopWords() []string {
 	return p.stopWords
 }
 
-// newDocument creates a new Document
-func newDocument() *Document {
+// NewDocument creates a new Document
+func NewDocument() *Document {
 	var tokens []string
 	var filteredTokens []string
 	return &Document{0, "", "", "", tokens, filteredTokens}
@@ -94,4 +94,14 @@ func (doc *Document) SetSummary(summary string) {
 // SetKeywords sets doc.keywords to keywords
 func (doc *Document) SetKeywords(keywords string) {
 	doc.keywords = keywords
+}
+
+// SetTokens sets doc.tokens to tokens
+func (doc *Document) SetTokens(tokens []string) {
+	doc.tokens = tokens
+}
+
+// SetKeywords sets doc.filteredTokens to filteredTokens
+func (doc *Document) SetFilteredTokens(filteredTokens []string) {
+	doc.filteredTokens = filteredTokens
 }
