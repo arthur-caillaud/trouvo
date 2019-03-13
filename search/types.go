@@ -11,11 +11,22 @@ type Engine struct {
 	docNormDict *map[int]float64          // docID => docNorm
 }
 
+// SuperEngine enables to perform requests on multiple collection simultaneously
+type SuperEngine struct {
+	engines []*Engine
+}
+
 // BoolQueryGroup is the struct for operating boolean queries
 type BoolQueryGroup struct {
 	q        []string
 	operator string
 	result   []int
+}
+
+// Result is the struct returned by our engines
+type Result struct {
+	docID int
+	score float64
 }
 
 // NewSearchEngine creates a new SearchEngine
@@ -29,6 +40,15 @@ func NewSearchEngine(
 	return &Engine{index, vocDict, idfDict, docDict, docNormDict}
 }
 
+// NewSuperEngine creates a new SuperEngine
+func NewSuperEngine(engines []*Engine) *SuperEngine {
+	return &SuperEngine{engines}
+}
+
 func newBoolQueryGroup(q []string, operator string, result []int) BoolQueryGroup {
 	return BoolQueryGroup{q, operator, result}
+}
+
+func newResult(docID int, score float64) *Result {
+	return &Result{docID, score}
 }

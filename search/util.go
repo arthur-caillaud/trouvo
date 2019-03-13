@@ -127,8 +127,8 @@ func filterDuplicates(in []int) (out []int) {
 	return
 }
 
-func makeSortDocClosure(s map[int]float64) func(docID1, docID2 int) bool {
-	return func(docID1, docID2 int) bool {
-		return s[docID1] < s[docID2]
+func makeSortDocClosure(res []*Result) func(i, j int) bool {
+	return func(i, j int) bool {
+		return res[i].score < res[j].score
 	}
 }

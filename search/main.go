@@ -1,32 +1,23 @@
 package search
 
 import (
-	"bufio"
-	"fmt"
 	"math"
-	"os"
 	"sort"
 	"strings"
-	"time"
 )
 
-import (
-	"trouvo/display"
-)
-
-// Run the search engine that reads the console input to process the query
-func (engine *Engine) Run(display *display.Display) {
-	for true {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Println("Type query :")
-		text, _ := reader.ReadString('\n')
-		start := time.Now()
-		text = strings.TrimSpace(text)
-		res := engine.VectSearch(text)
-		end := time.Now()
-		elapsed := end.Sub(start)
-		display.Show(res, elapsed)
+// Search performs a SuperEngine search on all its sub-engines
+func (superEngine *SuperEngine) Search(q string) (res []int) {
+	rawRes := []*Result{}
+	for _, engine := range superEngine.engines {
+		engineRes := engine.VectSearch(q)
+		rawRes = append(rawRes, engineRes...)
 	}
+	sort.Slice(rawRes, makeSortDocClosure(rawRes))
+	for _, result := range rawRes {
+		res = append(res, result.docID)
+	}
+	return res
 }
 
 // BoolSearch runs a boolean query with the SearchEngine
@@ -38,7 +29,7 @@ func (engine *Engine) BoolSearch(q string) (res []int) {
 }
 
 // VectSearch runs a vectorial query with the SearchEngine and cos measure
-func (engine *Engine) VectSearch(q string) (res []int) {
+func (engine *Engine) VectSearch(q string) (res []*Result) {
 	qWords := splitWords(q)
 	index := *engine.index
 	vocDict := *engine.vocDict
@@ -68,14 +59,15 @@ func (engine *Engine) VectSearch(q string) (res []int) {
 		}
 	}
 
-	for docID, docScore := range s {
-		if docScore != 0 {
-			s[docID] = docScore / (math.Sqrt(qNormFactor) * math.Sqrt(docNormDict[docID]))
-			res = append(res, docID)
+	for docID, score := range s {
+		if score != 0 {
+			s[docID] = score / (math.Sqrt(qNormFactor) * math.Sqrt(docNormDict[docID]))
+			result := newResult(docID, score)
+			res = append(res, result)
 		}
 	}
 
-	sort.Slice(res, makeSortDocClosure(s))
+	sort.Slice(res, makeSortDocClosure(res))
 
 	return
 }
