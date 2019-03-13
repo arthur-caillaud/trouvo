@@ -21,7 +21,7 @@ func (p *Parser) Run() {
 			doc := parser.NewDocument()
 			doc.SetTitle(fileName)
 			doc.SetDocID(docID)
-			doc.SetTokens(tokens)
+			doc.SetFilteredTokens(tokens)
 			docs = append(docs, doc)
 		}
 		col := parser.NewCollection(docs)
