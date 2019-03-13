@@ -109,6 +109,7 @@ func mainCS276() {
 	start = time.Now()
 	engines := []*search.Engine{}
 	indexSize := 0
+	docDict := make(map[int]*parser.Document)
 	for _, col := range cols {
 		indexer := indexer.New(col)
 		indexer.Build()
@@ -121,6 +122,9 @@ func mainCS276() {
 			indexer.GetDocDict(),
 			indexer.GetDocNormDict(),
 		)
+		for docID, doc := range *indexer.GetDocDict() {
+			docDict[docID] = doc
+		}
 		engines = append(engines, engine)
 	}
 	end = time.Now()
@@ -130,7 +134,7 @@ func mainCS276() {
 	fmt.Println("----")
 
 	superEngine := search.NewSuperEngine(engines)
-	disp := display.New(indexer.GetDocDict())
+	disp := display.New(&docDict)
 
 	// Main infinite loop used to let the user query our search engine
 	for true {
@@ -139,7 +143,7 @@ func mainCS276() {
 		text, _ := reader.ReadString('\n')
 		start := time.Now()
 		text = strings.TrimSpace(text)
-		res := superEngine.VectSearch(text)
+		res := superEngine.Search(text)
 		end := time.Now()
 		elapsed := end.Sub(start)
 		disp.Show(res, elapsed)

@@ -7,16 +7,12 @@ import (
 )
 
 // Search performs a SuperEngine search on all its sub-engines
-func (superEngine *SuperEngine) Search(q string) (res []int) {
-	rawRes := []*Result{}
+func (superEngine *SuperEngine) Search(q string) (res []*Result) {
 	for _, engine := range superEngine.engines {
 		engineRes := engine.VectSearch(q)
-		rawRes = append(rawRes, engineRes...)
+		res = append(res, engineRes...)
 	}
-	sort.Slice(rawRes, makeSortDocClosure(rawRes))
-	for _, result := range rawRes {
-		res = append(res, result.docID)
-	}
+	sort.Slice(res, makeSortDocClosure(res))
 	return res
 }
 
