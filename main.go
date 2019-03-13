@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"trouvo/cs276parser"
 	"trouvo/display"
 	"trouvo/indexer"
 	"trouvo/parser"
@@ -10,15 +11,19 @@ import (
 )
 
 const (
-	pathName          = "/Users/arthur/go/src/trouvo/Data/CACM/cacm.all"
+	pathNameCACM      = "/Users/arthur/go/src/trouvo/Data/CACM/cacm.all"
+	pathNameCS276     = "/Users/arthur/go/src/trouvo/Data/CS276"
 	stopWordsPathName = "/Users/arthur/go/src/trouvo/Data/CACM/common_words"
 )
 
 func main() {
+	mainCS276()
+}
 
+func mainCACM() {
 	fmt.Println("----")
 	start := time.Now()
-	p := parser.New(pathName, stopWordsPathName)
+	p := parser.New(pathNameCACM, stopWordsPathName)
 	p.Run() // Parsing...
 	col := p.GetCollection()
 	end := time.Now()
@@ -63,4 +68,15 @@ func main() {
 	)
 	disp := display.New(indexer.GetDocDict())
 	engine.Run(disp) // Run the SearchEngine
+}
+
+func mainCS276() {
+	fmt.Println("----")
+	start := time.Now()
+	p := cs276parser.New(pathNameCS276)
+	p.Run() // Parsing...
+	end := time.Now()
+	elapsed := end.Sub(start)
+	fmt.Println("Parsed in", elapsed)
+	fmt.Println("----")
 }
