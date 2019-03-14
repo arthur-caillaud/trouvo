@@ -76,32 +76,3 @@ func CompareResults(trueRes []int, ourRes []int) (tp int, fp int, fn int) {
 	fn = len(trueRes) - len(truePositives)
 	return
 }
-
-func PrecisionMeasure(tp, fp int) float64 {
-	return float64(tp) / float64(tp+fp)
-}
-
-func RecallMeasure(tp, fn int) float64 {
-	return float64(tp) / float64(tp+fn)
-}
-
-func AccuracyMeasure(tp, tn, fn, fp int) float64 {
-	return float64(tp+tn) / float64(tp+fn+fp+tn)
-}
-
-func EMeasure(alpha float64) float64 {
-	// return 1 - 1 / (alpha * 1/PrecisionMeasure() + (1-alpha) * 1/RecallMeasure())
-	return 0
-}
-
-func FMeasure(alpha float64) float64 {
-	// return 1 - EMeasure(alpha)
-	return 0
-}
-
-func AVG(scores []float64) (avg float64) {
-	for _, score := range scores {
-		avg += score
-	}
-	return 100 * avg / float64(len(scores))
-}
