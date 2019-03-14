@@ -16,9 +16,7 @@ import (
 
 func mainCACM() {
 	indexer := buildCACM()
-	measureCACM(indexer)
-	// indexer := buildCACM()
-	// runCACM(indexer)
+	runCACM(indexer)
 }
 
 func buildCACM() *indexer.Indexer {
@@ -63,32 +61,11 @@ func measureCACM(indexer *indexer.Indexer) {
 		indexer.GetDocNormDict(),
 	)
 	// parse trueResults and queries from query.text and qrels.text
-	trueResults := measure.ParseResults()
 	queries := measure.ParseQueries()
+	trueResults := measure.ParseResults()
+	colSize := len(*indexer.GetDocDict())
 	// We store the scores to compute averages
-	precisionScores := []float64{}
-	recallScores := []float64{}
-	accuracyScores := []float64{}
-	// Run each measure query
-	for qID, q := range queries {
-		engineResults := engine.VectSearch(q)
-		ourRes := []int{}
-		for _, res := range engineResults {
-			ourRes = append(ourRes, res.GetDocID())
-		}
-		trueRes := trueResults[qID+1]
-		// Computing tp, fp, fn, tn by compring ourResults and trueResults
-		tp, fp, fn := measure.CompareResults(ourRes, trueRes)
-		tn := len(*indexer.GetDocDict()) - tp - fp - fn
-		// Computing precision, recall, accuract
-		precision := measure.PrecisionMeasure(tp, fp)
-		recall := measure.RecallMeasure(tp, fn)
-		accuracy := measure.AccuracyMeasure(tp, tn, fn, fp)
-		// Append the results in their slices
-		precisionScores = append(precisionScores, precision)
-		recallScores = append(recallScores, recall)
-		accuracyScores = append(accuracyScores, accuracy)
-	}
+	precisionScores, recallScores, accuracyScores := collectMeasuresCACM(engine, queries, trueResults, colSize)
 	// Print the averages of these scores
 	avgPrecision := measure.AVG(precisionScores)
 	avgRecall := measure.AVG(recallScores)
@@ -142,4 +119,36 @@ func indexCACM(col *parser.Collection) *indexer.Indexer {
 	fmt.Println("Index is", indexer.GetIndexSize(), "kB large.")
 	fmt.Println("----")
 	return indexer
+}
+
+func collectMeasuresCACM(
+	engine *search.Engine,
+	queries []string,
+	trueResults map[int][]int,
+	colSize int,
+) ([]float64, []float64, []float64) {
+	precisionScores := []float64{}
+	recallScores := []float64{}
+	accuracyScores := []float64{}
+	// Run each measure query
+	for qID, q := range queries {
+		engineResults := engine.VectSearch(q)
+		ourRes := []int{}
+		for _, res := range engineResults {
+			ourRes = append(ourRes, res.GetDocID())
+		}
+		trueRes := trueResults[qID+1]
+		// Computing tp, fp, fn, tn by compring ourResults and trueResults
+		tp, fp, fn := measure.CompareResults(ourRes, trueRes)
+		tn := colSize - tp - fp - fn
+		// Computing precision, recall, accuract
+		precision := measure.PrecisionMeasure(tp, fp)
+		recall := measure.RecallMeasure(tp, fn)
+		accuracy := measure.AccuracyMeasure(tp, tn, fn, fp)
+		// Append the results in their slices
+		precisionScores = append(precisionScores, precision)
+		recallScores = append(recallScores, recall)
+		accuracyScores = append(accuracyScores, accuracy)
+	}
+	return precisionScores, recallScores, accuracyScores
 }
