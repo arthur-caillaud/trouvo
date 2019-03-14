@@ -137,3 +137,33 @@ func Save(path string, v interface{}) error
 // to the file being missing.
 func Load(path string, v interface{}) error
 ```
+
+### measure
+
+The measure package computes different measures on the CACM collection SearchEngine we built.
+
+```go
+func PrecisionMeasure(tp, fp int) float64
+```
+
+```go
+func RecallMeasure(tp, fn int) float64
+```
+
+```go
+func AccuracyMeasure(tp, tn, fn, fp int) float64
+```
+
+```go
+func EMeasure(tp, fp, fn int) float64
+```
+
+```go
+func FMeasure(tp, fp, fn int) float64
+```
+
+#### Results for CACM SearchEngine
+
+| Precision (avg)      | Recall (avg)       | Accuracy (avg) |
+|:---------------:|:-------------:| :-----:|
+| 0.7%     | 0.7% | 58.2% |
