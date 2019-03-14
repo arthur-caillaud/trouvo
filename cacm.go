@@ -53,6 +53,8 @@ func runCACM(indexer *indexer.Indexer) {
 }
 
 func measureCACM(indexer *indexer.Indexer) {
+	fmt.Println("Measuring relevance...")
+	// Build the SearchEngine that will be measured
 	engine := search.NewSearchEngine(
 		indexer.GetIndex(),
 		indexer.GetVocDict(),
@@ -60,15 +62,40 @@ func measureCACM(indexer *indexer.Indexer) {
 		indexer.GetDocDict(),
 		indexer.GetDocNormDict(),
 	)
+	// parse trueResults and queries from query.text and qrels.text
+	trueResults := measure.ParseResults()
 	queries := measure.ParseQueries()
-	for k, q := range queries {
-		results := engine.VectSearch(q)
-		if k == 0 {
-			for _, res := range results {
-				fmt.Println(res.GetDocID())
-			}
+	// We store the scores to compute averages
+	precisionScores := []float64{}
+	recallScores := []float64{}
+	accuracyScores := []float64{}
+	// Run each measure query
+	for qID, q := range queries {
+		engineResults := engine.VectSearch(q)
+		ourRes := []int{}
+		for _, res := range engineResults {
+			ourRes = append(ourRes, res.GetDocID())
 		}
+		trueRes := trueResults[qID+1]
+		// Computing tp, fp, fn, tn by compring ourResults and trueResults
+		tp, fp, fn := measure.CompareResults(ourRes, trueRes)
+		tn := len(*indexer.GetDocDict()) - tp - fp - fn
+		// Computing precision, recall, accuract
+		precision := measure.PrecisionMeasure(tp, fp)
+		recall := measure.RecallMeasure(tp, fn)
+		accuracy := measure.AccuracyMeasure(tp, tn, fn, fp)
+		// Append the results in their slices
+		precisionScores = append(precisionScores, precision)
+		recallScores = append(recallScores, recall)
+		accuracyScores = append(accuracyScores, accuracy)
 	}
+	// Print the averages of these scores
+	avgPrecision := measure.AVG(precisionScores)
+	avgRecall := measure.AVG(recallScores)
+	avgAccuracy := measure.AVG(accuracyScores)
+	fmt.Println("Average Precision :", avgPrecision, "%")
+	fmt.Println("Average Recall :", avgRecall, "%")
+	fmt.Println("Average Accuracy :", avgAccuracy, "%")
 }
 
 func parseCACM() *parser.Parser {
