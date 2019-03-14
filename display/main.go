@@ -8,8 +8,9 @@ import (
 
 // Show displays a summary of the document with docID
 func (display *Display) Show(results []*search.Result, elapsed time.Duration) {
+	fmt.Println()
 	fmt.Println(len(results), "results found in", elapsed)
-	fmt.Println("----")
+	fmt.Println()
 	for k, res := range results {
 		if k < 10 { // We only show 10 results (10RPP)
 			doc := (*display.docDict)[res.GetDocID()]
