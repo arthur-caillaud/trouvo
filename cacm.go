@@ -10,12 +10,15 @@ import (
 	"trouvo/indexer"
 	"trouvo/parser"
 	// "trouvo/persist"
+	"trouvo/measure"
 	"trouvo/search"
 )
 
 func mainCACM() {
 	indexer := buildCACM()
-	runCACM(indexer)
+	measureCACM(indexer)
+	// indexer := buildCACM()
+	// runCACM(indexer)
 }
 
 func buildCACM() *indexer.Indexer {
@@ -46,6 +49,25 @@ func runCACM(indexer *indexer.Indexer) {
 		end := time.Now()
 		elapsed := end.Sub(start).Round(time.Microsecond)
 		disp.Show(res, elapsed)
+	}
+}
+
+func measureCACM(indexer *indexer.Indexer) {
+	engine := search.NewSearchEngine(
+		indexer.GetIndex(),
+		indexer.GetVocDict(),
+		indexer.GetIdfDict(),
+		indexer.GetDocDict(),
+		indexer.GetDocNormDict(),
+	)
+	queries := measure.ParseQueries()
+	for k, q := range queries {
+		results := engine.VectSearch(q)
+		if k == 0 {
+			for _, res := range results {
+				fmt.Println(res.GetDocID())
+			}
+		}
 	}
 }
 
