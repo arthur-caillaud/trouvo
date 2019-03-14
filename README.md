@@ -166,4 +166,4 @@ func FMeasure(tp, fp, fn int) float64
 
 | Precision (avg)      | Recall (avg)       | Accuracy (avg) |
 |:---------------:|:-------------:| :-----:|
-| 0.7%     | 0.7% | 58.2% |
+| 0.7%     | 0.7% | 91.1% |

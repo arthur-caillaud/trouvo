@@ -16,7 +16,7 @@ import (
 
 func mainCACM() {
 	indexer := buildCACM()
-	runCACM(indexer)
+	measureCACM(indexer)
 }
 
 func buildCACM() *indexer.Indexer {

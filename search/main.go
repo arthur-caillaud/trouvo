@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+const MINIMUM_SCORE = 0.001
+
 // Search performs a SuperEngine search on all its sub-engines
 func (superEngine *SuperEngine) Search(q string) (res []*Result) {
 	for _, engine := range superEngine.engines {
@@ -57,9 +59,12 @@ func (engine *Engine) VectSearch(q string) (res []*Result) {
 
 	for docID, score := range s {
 		if score != 0 {
-			s[docID] = score / (math.Sqrt(qNormFactor) * math.Sqrt(docNormDict[docID]))
-			result := newResult(docID, score)
-			res = append(res, result)
+			normedScore := score / (math.Sqrt(qNormFactor) * math.Sqrt(docNormDict[docID]))
+			if normedScore > MINIMUM_SCORE {
+				s[docID] = normedScore
+				result := newResult(docID, score)
+				res = append(res, result)
+			}
 		}
 	}
 
